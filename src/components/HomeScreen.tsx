@@ -1,47 +1,12 @@
 import React, { useState } from 'react';
+import { allApps } from '@/lib/apps';
 import { StatusBar } from './StatusBar';
 import { AppIcon } from './AppIcon';
 import { AppDrawer } from './AppDrawer';
 import { NotificationPanel } from './NotificationPanel';
-import { SettingsApp } from './SettingsApp';
-import { PhoneApp } from './PhoneApp';
-import { MessagesApp } from './MessagesApp';
-import { CameraApp } from './CameraApp';
-import { BrowserApp } from './BrowserApp';
-import { CalculatorApp } from './CalculatorApp';
-import { CalendarApp } from './CalendarApp';
-import { MusicApp } from './MusicApp';
-import { FilesApp } from './FilesApp';
-import { NotesApp } from './NotesApp';
-import { PrivacyCentralApp } from './PrivacyCentralApp';
-import { TerminalApp } from './TerminalApp';
-import { WeatherApp } from './WeatherApp';
-import { GalleryApp } from './GalleryApp';
-import { ClockApp } from './ClockApp';
-import { ContactsApp } from './ContactsApp';
-import { RetroArchApp } from './RetroArchApp';
-import { MapsApp } from './MapsApp';
-import { FDroidApp } from './FDroidApp';
 import { CameraCrashDialog } from './CameraCrashDialog';
 import { VolumePopup } from './VolumePopup';
-import { 
-  Settings, 
-  Camera, 
-  MessageSquare, 
-  Phone, 
-  Globe, 
-  Calculator,
-  Calendar,
-  Music,
-  FileText,
-  Shield,
-  Smartphone,
-  Download,
-  Cloud,
-  Image,
-  Clock,
-  Search
-} from 'lucide-react';
+import { Smartphone, Search } from 'lucide-react';
 
 interface HomeScreenProps {
   volume?: number;
@@ -66,44 +31,32 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   isUnlocked = true,
   onVolumeChange,
   showVolumePopup = false,
-  onHideVolumePopup
+  onHideVolumePopup,
 }) => {
-  const [currentApp, setCurrentApp] = useState<string | null>(null);
+  const [currentAppId, setCurrentAppId] = useState<string | null>(null);
   const [showAppDrawer, setShowAppDrawer] = useState(false);
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
   const [swipeStartY, setSwipeStartY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [notificationOffset, setNotificationOffset] = useState(0);
   const [showCameraCrash, setShowCameraCrash] = useState(false);
-  const [lastTap, setLastTap] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchInput, setShowSearchInput] = useState(false);
 
+  const mainApps = allApps.filter(app => app.type === 'main');
+  const dockApps = allApps.filter(app => app.type === 'dock');
 
-  const mainApps = [
-    { icon: Camera, name: 'Camera', gradient: false },
-    { icon: Settings, name: 'Settings', gradient: false },
-    { icon: Calculator, name: 'Calculator', gradient: false },
-    { icon: Calendar, name: 'Calendar', gradient: false },
-    { icon: Music, name: 'Music', gradient: false },
-  ];
-
-  const dockApps = [
-    { icon: Phone, name: 'Phone', gradient: true },
-    { icon: MessageSquare, name: 'Messages', gradient: false },
-  ];
-
-  const openApp = (appName: string) => {
-    // Check if camera is disabled and user tries to open camera
-    if (appName === 'Camera' && !cameraEnabled) {
+  const openApp = (appId: string) => {
+    const app = allApps.find(a => a.id === appId);
+    if (app && app.id === 'camera' && !cameraEnabled) {
       setShowCameraCrash(true);
       return;
     }
-    setCurrentApp(appName);
+    setCurrentAppId(appId);
   };
 
   const closeApp = () => {
-    setCurrentApp(null);
+    setCurrentAppId(null);
   };
 
   const openAppDrawer = () => {
@@ -173,10 +126,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      // Open browser with DuckDuckGo search URL
-      const searchUrl = `https://duckduckgo.com/?q=${searchQuery.replace(/\s+/g, '+')}`;
-      // For now, we'll just open the browser app - in a real app this would navigate to the URL
-      setCurrentApp('Browser');
+      openApp('browser');
       setShowSearchInput(false);
       setSearchQuery('');
     }
@@ -187,80 +137,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     setSearchQuery('');
   };
 
-  if (currentApp === 'Settings') {
-    return <SettingsApp onBack={closeApp} />;
-  }
+  const currentApp = allApps.find(app => app.id === currentAppId);
 
-  if (currentApp === 'Phone') {
-    return <PhoneApp onBack={closeApp} networkEnabled={gpsEnabled} />;
-  }
-
-  if (currentApp === 'Messages') {
-    return <MessagesApp onBack={closeApp} />;
-  }
-
-  if (currentApp === 'Camera') {
-    return <CameraApp onBack={closeApp} />;
-  }
-
-  if (currentApp === 'Browser') {
-    return <BrowserApp onBack={closeApp} />;
-  }
-
-  if (currentApp === 'Calculator') {
-    return <CalculatorApp onBack={closeApp} />;
-  }
-
-  if (currentApp === 'Calendar') {
-    return <CalendarApp onBack={closeApp} />;
-  }
-
-  if (currentApp === 'Music') {
-    return <MusicApp onBack={closeApp} />;
-  }
-
-  if (currentApp === 'Files') {
-    return <FilesApp onBack={closeApp} />;
-  }
-
-  if (currentApp === 'Notes') {
-    return <NotesApp onBack={closeApp} />;
-  }
-
-  if (currentApp === 'Privacy Central') {
-    return <PrivacyCentralApp onBack={closeApp} />;
-  }
-
-  if (currentApp === 'Terminal') {
-    return <TerminalApp onBack={closeApp} />;
-  }
-
-  if (currentApp === 'Weather') {
-    return <WeatherApp onBack={closeApp} gpsEnabled={gpsEnabled} />;
-  }
-
-  if (currentApp === 'Gallery') {
-    return <GalleryApp onBack={closeApp} />;
-  }
-
-  if (currentApp === 'Clock') {
-    return <ClockApp onBack={closeApp} />;
-  }
-
-  if (currentApp === 'Contacts') {
-    return <ContactsApp onBack={closeApp} />;
-  }
-
-  if (currentApp === 'RetroArch') {
-    return <RetroArchApp onBack={closeApp} />;
-  }
-
-  if (currentApp === 'Maps') {
-    return <MapsApp onBack={closeApp} gpsEnabled={gpsEnabled} />;
-  }
-
-  if (currentApp === 'F-Droid') {
-    return <FDroidApp onBack={closeApp} />;
+  if (currentApp) {
+    const AppComponent = currentApp.component;
+    const props: any = { onBack: closeApp };
+    if (currentApp.id === 'phone') props.networkEnabled = gpsEnabled;
+    if (currentApp.id === 'weather') props.gpsEnabled = gpsEnabled;
+    if (currentApp.id === 'maps') props.gpsEnabled = gpsEnabled;
+    return <AppComponent {...props} />;
   }
 
   if (showAppDrawer) {
@@ -342,13 +227,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
         {/* Main apps grid */}
         <div className="grid grid-cols-4 gap-6 mb-12">
-          {mainApps.map((app, index) => (
+          {mainApps.map((app) => (
             <AppIcon
-              key={index}
+              key={app.id}
               icon={app.icon}
               name={app.name}
               gradient={app.gradient}
-              onClick={() => openApp(app.name)}
+              onClick={() => openApp(app.id)}
             />
           ))}
         </div>
@@ -360,15 +245,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       <div className="px-6 pb-4">
         <div className="bg-black/30 backdrop-blur-sm rounded-2xl p-4">
           <div className="flex justify-center items-center space-x-8">
-            {/* Phone */}
             <AppIcon
+              key={dockApps[0].id}
               icon={dockApps[0].icon}
               name={dockApps[0].name}
               gradient={dockApps[0].gradient}
-              onClick={() => openApp(dockApps[0].name)}
+              onClick={() => openApp(dockApps[0].id)}
             />
-            
-            {/* App Drawer Button */}
             <button
               onClick={openAppDrawer}
               className="flex flex-col items-center space-y-2 cursor-pointer group transition-smooth"
@@ -384,13 +267,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 Apps
               </span>
             </button>
-            
-            {/* Messages */}
             <AppIcon
+              key={dockApps[1].id}
               icon={dockApps[1].icon}
               name={dockApps[1].name}
               gradient={dockApps[1].gradient}
-              onClick={() => openApp(dockApps[1].name)}
+              onClick={() => openApp(dockApps[1].id)}
             />
           </div>
         </div>

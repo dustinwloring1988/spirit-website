@@ -1,63 +1,26 @@
 import React from 'react';
 import { AppIcon } from './AppIcon';
 import { StatusBar } from './StatusBar';
-import { AuroraStoreApp } from './AuroraStoreApp';
+import { allApps } from '@/lib/apps';
 import { ArrowLeft } from 'lucide-react';
-import { 
-  FileText, 
-  Download, 
-  Shield, 
-  Lock, 
-  Zap,
-  Terminal,
-  Package,
-  Users,
-  Heart,
-  Coffee,
-  Gamepad2,
-  Map,
-  Cloud,
-  Image,
-  Clock
-} from 'lucide-react';
 
 interface AppDrawerProps {
   onClose: () => void;
-  onAppSelect: (appName: string) => void;
+  onAppSelect: (appId: string) => void;
   cameraEnabled?: boolean;
 }
 
-export const AppDrawer: React.FC<AppDrawerProps> = ({ 
-  onClose, 
-  onAppSelect, 
-  cameraEnabled = true 
+export const AppDrawer: React.FC<AppDrawerProps> = ({
+  onClose,
+  onAppSelect,
+  cameraEnabled = true,
 }) => {
-  const [currentApp, setCurrentApp] = React.useState<string | null>(null);
-  
-  if (currentApp === 'Aurora Store') {
-    return <AuroraStoreApp onBack={() => setCurrentApp(null)} />;
-  }
-  
-  const allApps = [
-    { icon: FileText, name: 'Files', gradient: false },
-    { icon: Download, name: 'Aurora Store', gradient: true },
-    { icon: Cloud, name: 'Weather', gradient: false },
-    { icon: Coffee, name: 'Notes', gradient: false },
-    { icon: Terminal, name: 'Terminal', gradient: false },
-    { icon: Package, name: 'F-Droid', gradient: true },
-    { icon: Users, name: 'Contacts', gradient: false },
-    { icon: Heart, name: 'Health', gradient: false },
-    { icon: Gamepad2, name: 'RetroArch', gradient: false },
-    { icon: Map, name: 'Maps', gradient: false },
-    { icon: Image, name: 'Gallery', gradient: false },
-    { icon: Clock, name: 'Clock', gradient: false },
-    { icon: Shield, name: 'Privacy Central', gradient: false },
-  ];
+  const drawerApps = allApps.filter(app => app.type === 'drawer');
 
   return (
     <div className="h-full bg-gradient-surface text-white flex flex-col">
       <StatusBar />
-      
+
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4">
         <button
@@ -73,26 +36,16 @@ export const AppDrawer: React.FC<AppDrawerProps> = ({
       {/* Apps grid */}
       <div className="flex-1 px-6 pb-8">
         <div className="grid grid-cols-4 gap-6">
-          {allApps.map((app, index) => (
+          {drawerApps.map((app) => (
             <AppIcon
-              key={index}
+              key={app.id}
               icon={app.icon}
               name={app.name}
               gradient={app.gradient}
-              onClick={() => {
-                if (app.name === 'Aurora Store') {
-                  setCurrentApp(app.name);
-                } else if (app.name === 'Camera' && !cameraEnabled) {
-                  // Let the parent handle the crash dialog
-                  onAppSelect(app.name);
-                } else {
-                  onAppSelect(app.name);
-                }
-              }}
+              onClick={() => onAppSelect(app.id)}
             />
           ))}
         </div>
-
       </div>
     </div>
   );
