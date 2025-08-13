@@ -13,7 +13,67 @@
 ---
 
 ## About This Repo
-In this repo we have the webapp for spirit oss. This is an emulated version of our andriod build along with some harware emulation so you can get the full experance.
+This repository contains the source code for the Spirit OS interactive web demo. It's a web-based simulation of the Spirit OS mobile experience, allowing you to explore the user interface and key features in a browser. The demo includes hardware emulation controls to provide a more complete experience.
+
+---
+
+## Features
+
+- **Interactive OS Simulation:** Experience a live, in-browser demo of the Spirit OS.
+- **Hardware Controls:** Use on-screen controls to simulate power, volume, and other hardware buttons.
+- **Privacy Toggles:** Interact with simulated hardware toggles for camera, microphone, GPS, and more.
+- **App Ecosystem:** Explore a variety of pre-installed, privacy-focused applications.
+- **Responsive Design:** The simulation is designed to work on different screen sizes.
+
+---
+
+## Getting Started
+
+To run the project locally, follow these steps:
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/spirit-oss/spirit-os-website.git
+    cd spirit-os-website
+    ```
+
+2.  **Install dependencies:**
+    You can use `npm`, `pnpm`, or `bun`.
+    ```bash
+    # Using npm
+    npm install
+
+    # Using pnpm
+    pnpm install
+
+    # Using bun
+    bun install
+    ```
+
+3.  **Run the development server:**
+    ```bash
+    # Using npm
+    npm run dev
+
+    # Using pnpm
+    pnpm dev
+
+    # Using bun
+    bun run dev
+    ```
+
+4.  Open your browser and navigate to `http://localhost:5173` (or the address shown in your terminal).
+
+
+---
+
+## Tech Stack
+
+- [React](https://react.dev/) - A JavaScript library for building user interfaces.
+- [Vite](https://vitejs.dev/) - A fast build tool and development server.
+- [TypeScript](https://www.typescriptlang.org/) - A typed superset of JavaScript.
+- [Tailwind CSS](https://tailwindcss.com/) - A utility-first CSS framework.
+- [shadcn/ui](https://ui.shadcn.com/) - A collection of re-usable components.
 
 ---
 
